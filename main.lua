@@ -1,6 +1,7 @@
 local const = require("const")
 local movement = require("movement")
 local input = require("input")
+Push = require("lib.push")
 
 local gameState = const.gameState.menu
 local score = const.score.initialScore
@@ -40,18 +41,30 @@ local function drawGame()
 	love.graphics.draw(pipes.greenPipeSprite, pipes.bottom.x, pipes.bottom.y)
 
 	-- Base (bottom aligned)
-	local baseY = love.graphics.getHeight() - background.baseSprite:getHeight()
-	love.graphics.draw(background.baseSprite, 0, baseY)
+	love.graphics.draw(background.baseSprite, 0, background.baseY)
 
 	-- Score
 	love.graphics.print("Score: " .. score, 10, 10)
 end
 
 function love.load()
+	love.graphics.setDefaultFilter("nearest", "nearest")
+	Push:setupScreen(
+		const.resolution.originalBase,
+		const.resolution.originalHeight,
+		const.resolution.windowWidth,
+		const.resolution.windowHeight,
+		{ fullscreen = false, vsync = true }
+	)
+
 	gameState = const.gameState.menu
 
+	local baseSprite = love.graphics.newImage("assets/sprites/base.png")
+	local baseSpriteHeight = baseSprite:getHeight()
+
 	background = {
-		baseSprite = love.graphics.newImage("assets/sprites/base.png"),
+		baseSprite = baseSprite,
+		baseY = const.resolution.originalHeight - baseSpriteHeight,
 		backgroundDaySprite = love.graphics.newImage("assets/sprites/background-day.png"),
 	}
 
@@ -97,13 +110,14 @@ function love.update(dt)
 end
 
 function love.draw()
+	Push:start()
 	if gameState == const.gameState.menu then
 		love.graphics.draw(background.backgroundDaySprite, 0, 0)
 		love.graphics.printf(
 			"Presiona ENTER para jugar",
 			0,
-			love.graphics.getHeight() / 2,
-			love.graphics.getWidth(),
+			const.resolution.originalHeight / 2,
+			const.resolution.originalBase,
 			"center"
 		)
 	elseif gameState == const.gameState.play then
@@ -113,9 +127,10 @@ function love.draw()
 		love.graphics.printf(
 			"GAME OVER\nPresiona ENTER para reiniciar",
 			0,
-			love.graphics.getHeight() / 2,
-			love.graphics.getWidth(),
+			const.resolution.originalHeight / 2,
+			const.resolution.originalBase,
 			"center"
 		)
 	end
+	Push:finish()
 end

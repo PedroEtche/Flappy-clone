@@ -44,7 +44,6 @@ local function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2)
 end
 
 function movement.isPlayerCollided(player, pipes, audio, background)
-	local baseY = love.graphics.getHeight() - background.baseSprite:getHeight()
 	if
 		checkCollision(
 			player.x,
@@ -67,7 +66,7 @@ function movement.isPlayerCollided(player, pipes, audio, background)
 			const.pipes.length
 		)
 		or player.y <= const.screen.topBorder
-		or player.y + const.player.size >= baseY
+		or player.y + const.player.size >= background.baseY
 	then
 		audio.dieSource:play()
 		return true

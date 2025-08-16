@@ -1,5 +1,13 @@
+local windowBase, windowHeight = love.window.getDesktopDimensions()
+local scale = 0.8
+
 local config = {
-	scale = 1,
+	resolution = {
+		originalBase = 288,
+		originalHeight = 512,
+		windowHeight = windowHeight * scale,
+		windowWidth = windowBase * scale,
+	},
 
 	gameState = { menu = 1, play = 2, gameOver = 3 },
 
